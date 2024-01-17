@@ -1,0 +1,12 @@
+<h1>Liste des types d'evenemnt</h1>
+@for(type of types; track type.id) {
+    {{type.name}} - <span (click)="remove(type.id)">Supprimer</span><br>
+}
+
+<h1>Créer un nouvel évenement</h1>
+Nom: <input [(ngModel)]="newEventName" type="text" /> 
+<button (click)="apply()">Créer</button>
+
+@if(error) {
+    <span style="color: red">{{error}}</span>
+}
