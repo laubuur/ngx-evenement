@@ -1,0 +1,7 @@
+<h1>liste des evenements</h1>
+@for(event of events; track event.id) {
+    <a [routerLink]="['/event/'+event.id]">{{event.title}}</a> <br>
+}
+
+
+<p-button routerLink="/event/new" label="Nouvel évenement"></p-button>
