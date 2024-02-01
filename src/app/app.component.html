@@ -1,16 +1,28 @@
+
 <div class="page">
-    <nav>
-        <ul>
-            <li>
-                <a routerLink="eventType">Type d'evenement</a>
-            </li>
-            <li>
-                <a routerLink="events">Liste des évenements</a>
-            </li>
-        </ul>
-    </nav>
-    <main>
-        <router-outlet></router-outlet>
-    </main>
+    @if(isConnected()) {
+        <nav>
+            <ul>
+                <li>
+                    <a routerLink="eventType">Type d'evenement</a>
+                </li>
+                <li>
+                    <a routerLink="events">Liste des évenements</a>
+                </li>
+                <li>
+                    <span (click)="authService.disconnect()">Déconnexion</span>
+                </li>
+            </ul>
+        </nav>
+        <main>
+            <router-outlet></router-outlet>
+        </main>
+    }
+    @else {
+        <app-login></app-login>
+    }
+   
 </div>
 <p-toast></p-toast>
+
+

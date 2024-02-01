@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EventTypeService } from '../../services/event-type.service';
@@ -6,7 +6,7 @@ import { EventTypeService } from '../../services/event-type.service';
 @Component({
   selector: 'app-event-type',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AsyncPipe],
   templateUrl: './event-type.component.html',
   styleUrl: './event-type.component.scss'
 })
@@ -15,6 +15,8 @@ export class EventTypeComponent {
   service = inject(EventTypeService);
   types: any = [];
   error = '';
+
+  list$ = this.service.list();
 
   ngOnInit() {
     this.list();

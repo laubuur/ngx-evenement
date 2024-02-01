@@ -10,11 +10,11 @@ export class EventService extends BaseService {
   protected override entityName = 'event';
 
   read(id: string) {
-    return this.http.get(this.baseUri+this.entityName+'/'+id);
+    return this.http.get(this.baseUri+this.entityName+'/'+id, {headers: this.getHeaders()});
   }
 
   update(data: any) {
-    return this.http.post(this.baseUri+this.entityName+'/'+data.id, {data});
+    return this.http.post(this.baseUri+this.entityName+'/'+data.id, {data}, {headers: this.getHeaders()});
   }
 
 }

@@ -9,7 +9,7 @@ import { ButtonModule } from 'primeng/button';
   standalone: true,
   imports: [RouterLink, CommonModule, ButtonModule],
   templateUrl: './event-list.component.html',
-  styleUrl: './event-list.component.scss'
+  styleUrl: './event-list.component.scss',
 })
 export class EventListComponent {
 
