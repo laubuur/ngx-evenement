@@ -24,8 +24,7 @@ export class BaseService {
   public remove(id: number) {
     return this.http.delete(this.baseUri+this.entityName+'/'+id, {headers: this.getHeaders()});
   }
-
- ( )
+ 
   protected getHeaders() {
     return new HttpHeaders({
       Authorization: 'Bearer '+this.authService.secret
