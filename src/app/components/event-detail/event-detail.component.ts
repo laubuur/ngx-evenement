@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EventService } from '../../services/event.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
@@ -11,11 +11,12 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { EventTypeService } from '../../services/event-type.service';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { dateTodayValidator } from '../../validators/date-today.validator';
 
 @Component({
   selector: 'app-event-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputTextareaModule, CalendarModule, DropdownModule,InputNumberModule, ButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, InputTextModule, InputTextareaModule, CalendarModule, DropdownModule,InputNumberModule, ButtonModule],
   templateUrl: './event-detail.component.html',
   styleUrl: './event-detail.component.scss',
 })
@@ -26,30 +27,35 @@ export class EventDetailComponent {
   route = inject(ActivatedRoute);
   messageService = inject(MessageService);
   router = inject(Router);
+  fb = inject(FormBuilder);
+  id?: number;
 
-  event = {
-    description: '',
-    address: '',
-    date: {},
-    price: 0,
-    eventTypeId: null,
-    title: ''
-  }
+  form = this.fb.group({
+    title: [{value: '', disabled: true,}, {validators: Validators.required, updateOn: 'blur'}],
+    address: [{value: '', disabled: true}, Validators.required],
+    date: [{value: null, disabled: true}, [Validators.required, dateTodayValidator()]],
+    price: [{value: null, disabled: true}, Validators.min(10)],
+    type: [{value: '', disabled: true}, Validators.required],
+    description: [{value: '', disabled: true}, [Validators.required, Validators.minLength(5)]]
+  });
 
   isNew = true;
   isEditable = false;
   eventTypes: any = [];
+  today = new Date();
 
   ngOnInit() {
     this.listEventType();
     this.route.params.subscribe(params => {
       if (params['id']) {
         if (params['id'] !== 'new') {
+          this.id = +params['id'];
           this.isNew = false;
           this.read(params['id']);
         }
         else {
           this.isEditable = true;
+          this.form.enable();
         }
       }
     });
@@ -58,13 +64,17 @@ export class EventDetailComponent {
   read(id: string) {
     this.service.read(id).subscribe((result: any) => {
       result.data.date = new Date(result.data.date);
-      this.event = result.data;
-      console.log('date', result);
+      this.form.controls.title.setValue(result.data.title);
+      this.form.controls.address.setValue(result.data.address);
+      this.form.controls.date.setValue(result.data.date);
+      this.form.controls.price.setValue(result.data.price);
+      this.form.controls.type.setValue(result.data.eventTypeId);
+      this.form.controls.description.setValue(result.data.description);
     });
   }
 
   create() {
-    this.service.create(this.event).subscribe(
+    this.service.create(this.buildEvent()).subscribe(
       result => {
         this.messageService.add({
           severity: 'success',
@@ -78,7 +88,7 @@ export class EventDetailComponent {
   }
 
   update() {
-    this.service.update(this.event).subscribe(result => {
+    this.service.update(this.buildEvent()).subscribe(result => {
       this.messageService.add({
         severity: 'success',
         summary: 'Succès',
@@ -88,9 +98,30 @@ export class EventDetailComponent {
     });
   }
 
+  edit() {
+    this.isEditable = true;
+    this.form.enable();
+  }
+
+  private buildEvent() {
+    return {
+      id: this.id ?? undefined,
+      title: this.form.controls.title.value,
+      address: this.form.controls.address.value,
+      date: this.form.controls.date.value,
+      price: this.form.controls.price.value,
+      eventTypeId: this.form.controls.type.value,
+      description: this.form.controls.description.value
+    }
+  }
+
   listEventType() {
     this.eventTypeService.list().subscribe((result:any) => {
       this.eventTypes = result.data;
     });
+  }
+
+  test() {
+    console.log(this.form);
   }
 }

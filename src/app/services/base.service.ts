@@ -14,15 +14,15 @@ export class BaseService {
    
 
   public create(data: any) {
-    return this.http.post(this.baseUri+this.entityName, {data}, {headers: this.getHeaders()});
+    return this.http.post(this.baseUri+this.entityName, {data});
   }
 
   public list() {
-    return this.http.get<any[]>(this.baseUri+this.entityName, {headers: this.getHeaders()});
+    return this.http.get<any[]>(this.baseUri+this.entityName);
   }
 
-  public remove(id: number) {
-    return this.http.delete(this.baseUri+this.entityName+'/'+id, {headers: this.getHeaders()});
+  public remove(id: number) { 
+    return this.http.delete(this.baseUri+this.entityName+'/'+id);
   }
  
   protected getHeaders() {

@@ -39,5 +39,9 @@ export class AppComponent {
     return true;
   }
 
+  modifyToken() {
+    this.authService.secret = 'aaa';
+  }
+
  
 }

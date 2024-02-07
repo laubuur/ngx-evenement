@@ -1,33 +1,49 @@
 <div>
-    Title: <input pInputText [(ngModel)]="event.title" [disabled]="!isEditable"/><br>
-    Adresse: <input pInputText [(ngModel)]="event.address" [disabled]="!isEditable"/><br>
-    Date: <p-calendar [(ngModel)]="event.date" dateFormat="dd/mm/yy" [disabled]="!isEditable"></p-calendar><br>
-    Prix: <p-inputNumber 
-        [(ngModel)]="event.price" 
-        mode="currency" 
-        currency="EUR" 
-        locale="fr-FR"  
-        [disabled]="!isEditable"
-        [minFractionDigits]="0" [maxFractionDigits]="2" 
-        /><br>
+    <form [formGroup]="form">
+        Title: <input pInputText formControlName="title" /><br>
+        @if(form.controls.title.errors) {
+            <div style="color: red">Champ requis</div>
+        }
+        Adresse: <input pInputText formControlName="address"/><br>
+        @if(form.controls.address.errors) {
+            <div style="color: red">Champ requis</div>
+        }
+       
+        Date: <p-calendar formControlName="date" dateFormat="dd/mm/yy"></p-calendar><br>
+        @if(form.controls.date.getError('today')) {
+            <div style="color: red">{{form.controls.date.getError('today')}}</div>
+        }
+        @else if(form.controls.date.getError('required')) {
+            <div style="color: red">Champ requis</div>
+        }
 
-    Type: <p-dropdown 
-        [options]="eventTypes"
-        [(ngModel)]="event.eventTypeId" 
-        optionLabel="name" 
-        optionValue="id"  
-        [disabled]="!isEditable"
-        placeholder="Sélectionnez un type"></p-dropdown>
-    <br>
-    description: <textarea pInputTextarea [(ngModel)]="event.description" [disabled]="!isEditable"></textarea><br>
-    @if(isNew && isEditable) {
-        <p-button (click)="create()" label="Créer"></p-button>
-    }
-    @else if (isEditable) {
-        <p-button (click)="update()" label="Editer"></p-button>
-    }
-    @else {
-        <p-button (click)="isEditable = true" label="Edition"></p-button>
-    }
+        Prix: <p-inputNumber 
+            formControlName="price" 
+            mode="currency" 
+            currency="EUR" 
+            locale="fr-FR"
+            [minFractionDigits]="0" [maxFractionDigits]="2" 
+            /><br>
+    
+        Type: <p-dropdown 
+            [options]="eventTypes"
+            formControlName="type"
+            optionLabel="name" 
+            optionValue="id"
+            placeholder="Sélectionnez un type"></p-dropdown>
+        <br>
+        description: <textarea pInputTextarea formControlName="description"></textarea><br>
+        @if(isNew && isEditable) {
+            <p-button (click)="create()" label="Créer" [disabled]="form.invalid"></p-button>
+        }
+        @else if (isEditable) {
+            <p-button (click)="update()" label="Editer"  [disabled]="form.invalid"></p-button>
+        }
+        @else {
+            <p-button (click)="edit()" label="Edition"></p-button>
+        }
+        <p-button label="show form" (click)="test()"></p-button>
+    </form>
+ 
     
 </div>
