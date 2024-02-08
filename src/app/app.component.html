@@ -3,9 +3,12 @@
     @if(isConnected()) {
         <nav>
             <ul>
-                <li>
-                    <a routerLink="eventType">Type d'evenement</a>
-                </li>
+                @if(authService.hasRole('admin')) {
+                    <li>
+                        <a routerLink="eventType">Type d'evenement</a>
+
+                    </li>
+                }
                 <li>
                     <a routerLink="events">Liste des évenements</a>
                 </li>
@@ -25,6 +28,8 @@
         <app-login></app-login>
     }
    
+<!-- {{iban | iban}} <br> -->
+{{nb}} | {{nb | euro}}
 </div>
 <p-toast></p-toast>
 
